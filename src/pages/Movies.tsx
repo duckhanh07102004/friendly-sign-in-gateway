@@ -22,7 +22,7 @@ const movies: Movie[] = [
     rating: "8.2",
     duration: "1 giờ 55 phút",
     genre: "Sci-fi",
-    imageUrl: "/spiderman.jpg"
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: 2,
@@ -31,9 +31,26 @@ const movies: Movie[] = [
     rating: "8.4",
     duration: "3 giờ 1 phút",
     genre: "Action",
-    imageUrl: "/avengers.jpg"
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80"
   },
-  // Add more movies as needed
+  {
+    id: 3,
+    title: "The Matrix Resurrections",
+    year: "2021",
+    rating: "7.5",
+    duration: "2 giờ 28 phút",
+    genre: "Sci-fi",
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 4,
+    title: "Inception",
+    year: "2010",
+    rating: "8.8",
+    duration: "2 giờ 28 phút",
+    genre: "Sci-fi",
+    imageUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=800&q=80"
+  }
 ];
 
 export default function Movies() {
