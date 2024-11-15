@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Movies from "./pages/Movies";
+import ContractForm from "./components/ContractForm";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/movies" element={<Movies />} />
+          <Route path="/contract/:movieTitle" element={<ContractForm />} />
           <Route path="/" element={<Navigate to="/sign-in" replace />} />
         </Routes>
       </BrowserRouter>

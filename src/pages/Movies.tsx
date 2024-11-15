@@ -1,21 +1,10 @@
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-
-interface Movie {
-  id: number;
-  title: string;
-  year: string;
-  rating: string;
-  duration: string;
-  genre: string;
-  imageUrl: string;
-  description?: string;
-}
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import MovieCard from "@/components/MovieCard";
+import MovieDialog from "@/components/MovieDialog";
+import { Movie } from "@/types/movie";
+import { motion } from "framer-motion";
 
 const movies: Movie[] = [
   {
@@ -59,15 +48,7 @@ const movies: Movie[] = [
 ];
 
 export default function Movies() {
-  const { toast } = useToast();
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-
-  const handlePurchase = (movieTitle: string) => {
-    toast({
-      title: "Purchase Successful",
-      description: `You have successfully purchased a ticket for ${movieTitle}`,
-    });
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
@@ -133,37 +114,7 @@ export default function Movies() {
             <CarouselContent>
               {movies.map((movie) => (
                 <CarouselItem key={movie.id} className="md:basis-1/3 lg:basis-1/4">
-                  <Card className="bg-gray-800 border-gray-700 cursor-pointer" onClick={() => setSelectedMovie(movie)}>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <img
-                        src={movie.imageUrl}
-                        alt={movie.title}
-                        className="w-full h-[400px] object-cover rounded-t-lg"
-                      />
-                      <div className="p-4">
-                        <h4 className="font-bold mb-2">{movie.title}</h4>
-                        <div className="flex items-center space-x-2 text-sm text-gray-400 mb-4">
-                          <span>{movie.year}</span>
-                          <span>•</span>
-                          <span>{movie.duration}</span>
-                          <span>•</span>
-                          <span>{movie.genre}</span>
-                        </div>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePurchase(movie.title);
-                          }}
-                          className="w-full bg-yellow-400 text-black hover:bg-yellow-500"
-                        >
-                          Đặt mua
-                        </Button>
-                      </div>
-                    </motion.div>
-                  </Card>
+                  <MovieCard movie={movie} onSelect={setSelectedMovie} />
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -173,36 +124,7 @@ export default function Movies() {
         </section>
       </main>
 
-      <Dialog open={!!selectedMovie} onOpenChange={() => setSelectedMovie(null)}>
-        <DialogContent className="bg-gray-800 text-white max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">{selectedMovie?.title}</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4">
-            <img
-              src={selectedMovie?.imageUrl}
-              alt={selectedMovie?.title}
-              className="w-full h-[300px] object-cover rounded-lg"
-            />
-            <div className="flex items-center space-x-4 text-sm">
-              <span className="bg-yellow-400 text-black px-2 py-1 rounded">{selectedMovie?.rating}</span>
-              <span>{selectedMovie?.year}</span>
-              <span>{selectedMovie?.duration}</span>
-              <span>{selectedMovie?.genre}</span>
-            </div>
-            <p className="text-gray-300">{selectedMovie?.description}</p>
-            <Button 
-              onClick={() => {
-                handlePurchase(selectedMovie?.title || "");
-                setSelectedMovie(null);
-              }}
-              className="bg-yellow-400 text-black hover:bg-yellow-500"
-            >
-              Đặt mua
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <MovieDialog movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
     </div>
   );
 }
