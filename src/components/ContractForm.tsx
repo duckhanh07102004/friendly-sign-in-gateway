@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface ContractFormData {
   // Bên A
@@ -29,12 +29,13 @@ interface ContractFormData {
   phuongThucThanhToan: string;
 }
 
-export default function ContractForm({ movieTitle }: { movieTitle: string }) {
+export default function ContractForm() {
+  const { movieTitle } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
   const form = useForm<ContractFormData>({
     defaultValues: {
-      tenPhim: movieTitle,
+      tenPhim: decodeURIComponent(movieTitle || ''),
       tenCongTyB: "NEW MOVIE Cinema",
       diaChiB: "123 Nguyễn Huệ, Quận 1, TP.HCM",
       nguoiDaiDienB: "Nguyễn Văn A",
