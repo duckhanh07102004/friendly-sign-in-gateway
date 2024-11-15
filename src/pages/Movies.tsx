@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 interface Movie {
   id: number;
@@ -12,6 +14,7 @@ interface Movie {
   duration: string;
   genre: string;
   imageUrl: string;
+  description?: string;
 }
 
 const movies: Movie[] = [
@@ -22,7 +25,8 @@ const movies: Movie[] = [
     rating: "8.2",
     duration: "1 giờ 55 phút",
     genre: "Sci-fi",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+    description: "Lần đầu tiên trong lịch sử điện ảnh của Người Nhện, danh tính của người anh hùng hàng xóm thân thiện của chúng ta được tiết lộ. Khi yêu cầu Doctor Strange giúp đỡ, những rủi ro càng trở nên nguy hiểm hơn, buộc Peter phải khám phá ra ý nghĩa thực sự của việc trở thành Người Nhện."
   },
   {
     id: 2,
@@ -31,7 +35,8 @@ const movies: Movie[] = [
     rating: "8.4",
     duration: "3 giờ 1 phút",
     genre: "Action",
-    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80"
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80",
+    description: "Sau các sự kiện tàn khốc của Avengers: Infinity War, vũ trụ đang trong tình trạng đổ nát. Với sự giúp đỡ của các đồng minh còn lại, các Avengers tập hợp một lần nữa để đảo ngược hành động của Thanos và khôi phục lại sự cân bằng cho vũ trụ."
   },
   {
     id: 3,
@@ -55,6 +60,7 @@ const movies: Movie[] = [
 
 export default function Movies() {
   const { toast } = useToast();
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handlePurchase = (movieTitle: string) => {
     toast({
@@ -127,7 +133,7 @@ export default function Movies() {
             <CarouselContent>
               {movies.map((movie) => (
                 <CarouselItem key={movie.id} className="md:basis-1/3 lg:basis-1/4">
-                  <Card className="bg-gray-800 border-gray-700">
+                  <Card className="bg-gray-800 border-gray-700 cursor-pointer" onClick={() => setSelectedMovie(movie)}>
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.2 }}
@@ -147,7 +153,10 @@ export default function Movies() {
                           <span>{movie.genre}</span>
                         </div>
                         <Button
-                          onClick={() => handlePurchase(movie.title)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePurchase(movie.title);
+                          }}
                           className="w-full bg-yellow-400 text-black hover:bg-yellow-500"
                         >
                           Đặt mua
@@ -163,6 +172,37 @@ export default function Movies() {
           </Carousel>
         </section>
       </main>
+
+      <Dialog open={!!selectedMovie} onOpenChange={() => setSelectedMovie(null)}>
+        <DialogContent className="bg-gray-800 text-white max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">{selectedMovie?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <img
+              src={selectedMovie?.imageUrl}
+              alt={selectedMovie?.title}
+              className="w-full h-[300px] object-cover rounded-lg"
+            />
+            <div className="flex items-center space-x-4 text-sm">
+              <span className="bg-yellow-400 text-black px-2 py-1 rounded">{selectedMovie?.rating}</span>
+              <span>{selectedMovie?.year}</span>
+              <span>{selectedMovie?.duration}</span>
+              <span>{selectedMovie?.genre}</span>
+            </div>
+            <p className="text-gray-300">{selectedMovie?.description}</p>
+            <Button 
+              onClick={() => {
+                handlePurchase(selectedMovie?.title || "");
+                setSelectedMovie(null);
+              }}
+              className="bg-yellow-400 text-black hover:bg-yellow-500"
+            >
+              Đặt mua
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
