@@ -7,27 +7,62 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleSignInWithGoogle = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/movies`
+        }
+      });
+      
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Success!",
-      description: "You have successfully signed in.",
-    });
-    
-    setIsLoading(false);
-    navigate('/movies');
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "You have successfully signed in.",
+      });
+      
+      navigate('/movies');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,6 +83,7 @@ export default function SignIn() {
             variant="outline"
             className="w-full bg-white hover:bg-gray-50 text-auth-foreground border-auth-border"
             disabled={isLoading}
+            onClick={handleSignInWithGoogle}
           >
             <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 mr-2" />
             Continue with Google
@@ -72,6 +108,8 @@ export default function SignIn() {
                 required
                 className="bg-auth-input border-auth-border"
                 disabled={isLoading}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -91,6 +129,8 @@ export default function SignIn() {
                   required
                   className="bg-auth-input border-auth-border pr-10"
                   disabled={isLoading}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
