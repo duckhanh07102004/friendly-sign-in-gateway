@@ -24,7 +24,8 @@ interface ContractFormData {
   // Nội dung hợp đồng
   tenPhim: string;
   hinhThucPhatHanh: string;
-  thoiGianPhatHanh: string;
+  ngayBatDauThue: string;
+  ngayKetThucThue: string;
   phiDichVu: number;
   phuongThucThanhToan: string;
 }
@@ -132,6 +133,34 @@ export default function ContractForm() {
                   </FormItem>
                 )}
               />
+              
+              {/* New Rental Period Fields */}
+              <FormField
+                control={form.control}
+                name="ngayBatDauThue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngày bắt đầu thuê</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="bg-gray-700" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="ngayKetThucThue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngày kết thúc thuê</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} className="bg-gray-700" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               {/* ... Similar FormFields for other contract details */}
             </div>
 
