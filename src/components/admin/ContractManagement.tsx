@@ -13,8 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { Database } from "@/integrations/supabase/types";
 
+type ContractStatus = Database['public']['Tables']['contract_status']['Row'];
 type Contract = Database['public']['Tables']['contracts']['Row'] & {
-  contract_status: Database['public']['Tables']['contract_status']['Row']
+  contract_status: ContractStatus;
 };
 
 export default function ContractManagement() {
@@ -27,14 +28,13 @@ export default function ContractManagement() {
         .from('contracts')
         .select(`
           *,
-          contract_status (
-            status_name
-          )
+          contract_status (*)
         `)
-        .order('submitted_at', { ascending: false });
+        .order('submitted_at', { ascending: false })
+        .returns<Contract[]>();
 
       if (error) throw error;
-      return data as Contract[];
+      return data;
     },
   });
 
