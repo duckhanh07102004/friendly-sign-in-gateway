@@ -11,6 +11,7 @@ import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Movies from "./pages/Movies";
 import ContractForm from "./components/ContractForm";
+import React from 'react';
 
 const queryClient = new QueryClient();
 
@@ -34,51 +35,53 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/sign-in"
-              element={
-                !session ? <SignIn /> : <Navigate to="/movies" replace />
-              }
-            />
-            <Route
-              path="/sign-up"
-              element={
-                !session ? <SignUp /> : <Navigate to="/movies" replace />
-              }
-            />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route
-              path="/movies"
-              element={
-                session ? <Movies /> : <Navigate to="/sign-in" replace />
-              }
-            />
-            <Route
-              path="/contract/:movieTitle"
-              element={
-                session ? <ContractForm /> : <Navigate to="/sign-in" replace />
-              }
-            />
-            <Route
-              path="/"
-              element={
-                session ? (
-                  <Navigate to="/movies" replace />
-                ) : (
-                  <Navigate to="/sign-in" replace />
-                )
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/sign-in"
+                element={
+                  !session ? <SignIn /> : <Navigate to="/movies" replace />
+                }
+              />
+              <Route
+                path="/sign-up"
+                element={
+                  !session ? <SignUp /> : <Navigate to="/movies" replace />
+                }
+              />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route
+                path="/movies"
+                element={
+                  session ? <Movies /> : <Navigate to="/sign-in" replace />
+                }
+              />
+              <Route
+                path="/contract/:movieTitle"
+                element={
+                  session ? <ContractForm /> : <Navigate to="/sign-in" replace />
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  session ? (
+                    <Navigate to="/movies" replace />
+                  ) : (
+                    <Navigate to="/sign-in" replace />
+                  )
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
