@@ -22,9 +22,9 @@ export default function AdminDashboard() {
     }
 
     const { data: adminProfile } = await supabase
-      .from("admin_profiles")
-      .select("*")
-      .eq("id", session.user.id)
+      .from('admin_profiles')
+      .select('*')
+      .eq('id', session.user.id)
       .single();
 
     if (!adminProfile) {

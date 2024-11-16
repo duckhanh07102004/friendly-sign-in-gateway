@@ -11,6 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { Database } from "@/integrations/supabase/types";
+
+type Contract = Database['public']['Tables']['contracts']['Row'] & {
+  contract_status: Database['public']['Tables']['contract_status']['Row']
+};
 
 export default function ContractManagement() {
   const { toast } = useToast();
@@ -19,23 +24,25 @@ export default function ContractManagement() {
     queryKey: ["contracts"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("contracts")
+        .from('contracts')
         .select(`
           *,
-          contract_status(status_name)
+          contract_status (
+            status_name
+          )
         `)
-        .order("submitted_at", { ascending: false });
+        .order('submitted_at', { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Contract[];
     },
   });
 
   const handleStatusUpdate = async (contractId: number, newStatusId: number) => {
     const { error } = await supabase
-      .from("contracts")
+      .from('contracts')
       .update({ status_id: newStatusId })
-      .eq("id", contractId);
+      .eq('id', contractId);
 
     if (error) {
       toast({
