@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -117,6 +117,15 @@ const SignIn = () => {
             {loading ? "Loading..." : "Sign In"}
           </Button>
         </form>
+
+        <div className="mt-4 text-center">
+          <Link
+            to="/sign-up"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Don't have an account? Sign up
+          </Link>
+        </div>
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
