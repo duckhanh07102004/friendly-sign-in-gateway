@@ -5,6 +5,9 @@ import MovieCard from "@/components/MovieCard";
 import MovieDialog from "@/components/MovieDialog";
 import { Movie } from "@/types/movie";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const movies: Movie[] = [
   {
@@ -49,6 +52,25 @@ const movies: Movie[] = [
 
 export default function Movies() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error signing out",
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: "Signed out successfully",
+        description: "Come back soon!",
+      });
+      navigate("/sign-in");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
@@ -64,9 +86,18 @@ export default function Movies() {
               <a href="#support" className="hover:text-yellow-400">Hỗ trợ</a>
             </div>
           </div>
-          <Button variant="ghost" size="icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleSignOut}
+              className="text-white border-white hover:bg-white hover:text-black"
+            >
+              Sign Out
+            </Button>
+          </div>
         </nav>
       </header>
 
