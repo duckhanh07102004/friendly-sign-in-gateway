@@ -19,6 +19,11 @@ const SignIn = () => {
     setLoading(true);
 
     try {
+      // First, try to sign out any existing session to prevent token issues
+      await supabase.auth.signOut().catch(() => {
+        // Ignore signOut errors as we're about to sign in anyway
+      });
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
