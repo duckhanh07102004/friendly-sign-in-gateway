@@ -154,6 +154,7 @@ export type Database = {
           email: string | null
           id: number
           movie_title: string
+          notification_sent: boolean | null
           payment_method: string | null
           phone: string | null
           rental_end_date: string
@@ -174,6 +175,7 @@ export type Database = {
           email?: string | null
           id?: number
           movie_title: string
+          notification_sent?: boolean | null
           payment_method?: string | null
           phone?: string | null
           rental_end_date: string
@@ -194,6 +196,7 @@ export type Database = {
           email?: string | null
           id?: number
           movie_title?: string
+          notification_sent?: boolean | null
           payment_method?: string | null
           phone?: string | null
           rental_end_date?: string
