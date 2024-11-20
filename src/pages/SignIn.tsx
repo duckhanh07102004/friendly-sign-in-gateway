@@ -19,47 +19,41 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
-
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in.",
-      });
-      navigate("/movies");
-    } catch (error: any) {
-      if (error.message === "Invalid login credentials") {
-        // Try to sign up if login fails
-        try {
-          const { error: signUpError } = await supabase.auth.signUp({
-            email,
-            password,
-          });
-
-          if (signUpError) throw signUpError;
-
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
           toast({
-            title: "Account created!",
-            description: "Please check your email to verify your account.",
+            variant: "destructive",
+            title: "Account not found",
+            description: "Please create an account first or check your credentials.",
           });
-        } catch (signUpError: any) {
+        } else {
           toast({
             variant: "destructive",
             title: "Error",
-            description: signUpError.message,
+            description: error.message,
           });
         }
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: error.message,
-        });
+        return;
       }
+
+      if (data.user) {
+        toast({
+          title: "Welcome back!",
+          description: "You have successfully signed in.",
+        });
+        navigate("/movies");
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      });
     } finally {
       setLoading(false);
     }
