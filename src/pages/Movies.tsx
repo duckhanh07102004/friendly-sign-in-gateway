@@ -56,18 +56,40 @@ export default function Movies() {
   const { toast } = useToast();
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error signing out",
-        description: error.message,
-      });
-    } else {
-      toast({
-        title: "Signed out successfully",
-        description: "Come back soon!",
-      });
+    try {
+      // First check if we have a session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // If no session exists, just redirect to sign in
+        navigate("/sign-in");
+        return;
+      }
+
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Sign out error:", error);
+        // If we get a 403 or session not found error, force redirect to sign in
+        if (error.status === 403 || error.message.includes("session_not_found")) {
+          navigate("/sign-in");
+          return;
+        }
+        
+        toast({
+          variant: "destructive",
+          title: "Error signing out",
+          description: "Please try again",
+        });
+      } else {
+        toast({
+          title: "Signed out successfully",
+          description: "Come back soon!",
+        });
+        navigate("/sign-in");
+      }
+    } catch (error: any) {
+      console.error("Sign out error:", error);
+      // On any error, redirect to sign in
       navigate("/sign-in");
     }
   };
