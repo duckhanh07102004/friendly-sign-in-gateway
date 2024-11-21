@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import MovieCard from "@/components/MovieCard";
-import MovieDialog from "@/components/MovieDialog";
-import { Movie } from "@/types/movie";
-import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { Movie } from "@/types/movie";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import MovieDialog from "@/components/MovieDialog";
+import MovieHeader from "@/components/MovieHeader";
+import MovieHero from "@/components/MovieHero";
+import MovieCarousel from "@/components/MovieCarousel";
 
 const movies: Movie[] = [
   {
@@ -124,87 +123,15 @@ export default function Movies() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
-      <header className="max-w-7xl mx-auto mb-8">
-        <nav className="flex items-center justify-between py-4">
-          <div className="flex items-center space-x-8">
-            <h1 className="text-2xl font-bold">NEW MOVIE</h1>
-            <div className="space-x-6">
-              <a href="#new" className="hover:text-yellow-400">Phim mới</a>
-              <a href="#categories" className="hover:text-yellow-400">Thể loại</a>
-              <a href="#" onClick={handleContractsClick} className="hover:text-yellow-400">Hợp đồng</a>
-              <a href="#promos" className="hover:text-yellow-400">Ưu đãi</a>
-              <a href="#support" className="hover:text-yellow-400">Hỗ trợ</a>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleSignOut}
-              className="text-white border-white hover:bg-white hover:text-black"
-            >
-              Sign Out
-            </Button>
-          </div>
-        </nav>
-      </header>
-
+      <MovieHeader 
+        isAdmin={isAdmin} 
+        onSignOut={handleSignOut}
+        handleContractsClick={handleContractsClick}
+      />
       <main className="max-w-7xl mx-auto">
-        <section className="mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="relative rounded-2xl overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10" />
-            <img
-              src="/spiderman-hero.jpg"
-              alt="Featured Movie"
-              className="w-full h-[600px] object-cover"
-            />
-            <div className="absolute bottom-0 left-0 p-8 z-20 max-w-2xl">
-              <h2 className="text-5xl font-bold mb-4">Spider man No Way Home</h2>
-              <div className="flex items-center space-x-4 mb-4">
-                <span className="bg-yellow-400 text-black px-2 py-1 rounded">8.2</span>
-                <span>2021</span>
-                <span>1 giờ 55 phút</span>
-                <span>Sci-fi</span>
-              </div>
-              <p className="mb-6 text-gray-200">
-                Lần đầu tiên trong lịch sử điện ảnh của Người Nhện, danh tính của người anh
-                hùng hàng xóm thân thiện của chúng ta được tiết lộ...
-              </p>
-              <div className="flex space-x-4">
-                <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-black">
-                  Xem trailer
-                </Button>
-                <Button className="bg-yellow-400 text-black hover:bg-yellow-500">
-                  Đặt mua
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        <section>
-          <h3 className="text-2xl font-bold mb-6">Popular Movies</h3>
-          <Carousel className="w-full">
-            <CarouselContent>
-              {movies.map((movie) => (
-                <CarouselItem key={movie.id} className="md:basis-1/3 lg:basis-1/4">
-                  <MovieCard movie={movie} onSelect={setSelectedMovie} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="text-white" />
-            <CarouselNext className="text-white" />
-          </Carousel>
-        </section>
+        <MovieHero />
+        <MovieCarousel movies={movies} onSelectMovie={setSelectedMovie} />
       </main>
-
       <MovieDialog movie={selectedMovie} onClose={() => setSelectedMovie(null)} />
     </div>
   );
