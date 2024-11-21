@@ -57,17 +57,30 @@ export default function Movies() {
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAdminStatus();
+    checkAuth();
   }, []);
 
-  const checkAdminStatus = async () => {
-    const { data: adminProfile } = await supabase
-      .from('admin_profiles')
-      .select('*')
-      .eq('id', (await supabase.auth.getUser()).data.user?.id)
-      .single();
-    
-    setIsAdmin(!!adminProfile);
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        navigate("/sign-in");
+        return;
+      }
+
+      // Only check admin status if we have a valid session
+      const { data: adminProfile } = await supabase
+        .from('admin_profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      
+      setIsAdmin(!!adminProfile);
+    } catch (error) {
+      console.error("Auth check error:", error);
+      navigate("/sign-in");
+    }
   };
 
   const handleContractsClick = (e: React.MouseEvent) => {
@@ -79,24 +92,9 @@ export default function Movies() {
 
   const handleSignOut = async () => {
     try {
-      // First check if we have a session
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        // If no session exists, just redirect to sign in
-        navigate("/sign-in");
-        return;
-      }
-
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Sign out error:", error);
-        // If we get a 403 or session not found error, force redirect to sign in
-        if (error.status === 403 || error.message.includes("session_not_found")) {
-          navigate("/sign-in");
-          return;
-        }
-        
         toast({
           variant: "destructive",
           title: "Error signing out",
@@ -109,9 +107,8 @@ export default function Movies() {
         });
         navigate("/sign-in");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Sign out error:", error);
-      // On any error, redirect to sign in
       navigate("/sign-in");
     }
   };
