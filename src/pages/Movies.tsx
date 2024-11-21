@@ -67,20 +67,22 @@ export default function Movies() {
         return;
       }
 
+      // Check admin status
       const { data: adminProfiles, error } = await supabase
         .from('admin_profiles')
         .select('*')
-        .eq('id', session.user.id);
+        .eq('id', session.user.id)
+        .single();
       
       if (error && error.code !== 'PGRST116') {
         console.error("Admin check error:", error);
         return;
       }
 
-      if (adminProfiles && adminProfiles.length > 0) {
+      if (adminProfiles) {
         setIsAdmin(true);
         toast({
-          title: "Welcome Admin",
+          title: "Admin Access Granted",
           description: "You have administrator privileges",
         });
       }
@@ -94,7 +96,7 @@ export default function Movies() {
   const handleContractsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isAdmin) {
-      navigate('/contracts');
+      navigate('/admin');
     }
   };
 
