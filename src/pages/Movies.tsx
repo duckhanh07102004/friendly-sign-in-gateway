@@ -70,13 +70,19 @@ export default function Movies() {
       }
 
       // Only check admin status if we have a valid session
-      const { data: adminProfile } = await supabase
+      const { data: adminProfiles, error } = await supabase
         .from('admin_profiles')
         .select('*')
-        .eq('id', session.user.id)
-        .single();
+        .eq('id', session.user.id);
       
-      setIsAdmin(!!adminProfile);
+      if (error) {
+        console.error("Admin check error:", error);
+        return;
+      }
+
+      // Check if any admin profile exists for this user
+      setIsAdmin(adminProfiles && adminProfiles.length > 0);
+      
     } catch (error) {
       console.error("Auth check error:", error);
       navigate("/sign-in");
