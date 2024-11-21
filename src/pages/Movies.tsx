@@ -72,16 +72,15 @@ export default function Movies() {
       const { data: adminProfiles, error } = await supabase
         .from('admin_profiles')
         .select('*')
-        .eq('id', session.user.id)
-        .single();
+        .eq('id', session.user.id);
       
-      if (error) {
+      if (error && error.code !== 'PGRST116') {
         console.error("Admin check error:", error);
         return;
       }
 
-      // If admin profile exists, show welcome message
-      if (adminProfiles) {
+      // If admin profile exists (array has items), show welcome message
+      if (adminProfiles && adminProfiles.length > 0) {
         setIsAdmin(true);
         toast({
           title: "Welcome Admin",
