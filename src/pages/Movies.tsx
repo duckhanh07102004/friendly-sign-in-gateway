@@ -7,7 +7,7 @@ import { Movie } from "@/types/movie";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 const movies: Movie[] = [
   {
@@ -54,7 +54,6 @@ export default function Movies() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     checkAuth();
@@ -69,23 +68,21 @@ export default function Movies() {
         return;
       }
 
-      // Only check admin status if we have a valid session
+      // Check admin status
       const { data: adminProfiles, error } = await supabase
         .from('admin_profiles')
         .select('*')
-        .eq('id', session.user.id);
+        .eq('id', session.user.id)
+        .single();
       
       if (error) {
         console.error("Admin check error:", error);
         return;
       }
 
-      // Check if any admin profile exists for this user
-      const isAdminUser = adminProfiles && adminProfiles.length > 0;
-      setIsAdmin(isAdminUser);
-      
-      // Show welcome message if user is admin
-      if (isAdminUser) {
+      // If admin profile exists, show welcome message
+      if (adminProfiles) {
+        setIsAdmin(true);
         toast({
           title: "Welcome Admin",
           description: "You have administrator privileges",
