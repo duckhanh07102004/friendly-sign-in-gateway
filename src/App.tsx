@@ -10,6 +10,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ForgotPassword from "./pages/ForgotPassword";
 import Movies from "./pages/Movies";
+import Contracts from "./pages/Contracts";
 import ContractForm from "./components/ContractForm";
 import AdminDashboard from "./pages/admin/Dashboard";
 import React from 'react';
@@ -60,6 +61,12 @@ const App = () => {
                 path="/movies"
                 element={
                   session ? <Movies /> : <Navigate to="/sign-in" replace />
+                }
+              />
+              <Route
+                path="/contracts"
+                element={
+                  session ? <Contracts /> : <Navigate to="/sign-in" replace />
                 }
               />
               <Route

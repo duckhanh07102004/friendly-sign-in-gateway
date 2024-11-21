@@ -68,7 +68,6 @@ export default function Movies() {
         return;
       }
 
-      // Check admin status
       const { data: adminProfiles, error } = await supabase
         .from('admin_profiles')
         .select('*')
@@ -79,7 +78,6 @@ export default function Movies() {
         return;
       }
 
-      // If admin profile exists (array has items), show welcome message
       if (adminProfiles && adminProfiles.length > 0) {
         setIsAdmin(true);
         toast({
@@ -97,7 +95,7 @@ export default function Movies() {
   const handleContractsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (isAdmin) {
-      navigate('/admin');
+      navigate('/contracts');
     }
   };
 
