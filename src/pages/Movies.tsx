@@ -67,19 +67,21 @@ export default function Movies() {
         return;
       }
 
-      // Check admin status
-      const { data: adminProfiles, error } = await supabase
+      // Check admin status with proper query structure
+      const { data: adminProfile, error } = await supabase
         .from('admin_profiles')
-        .select('*')
+        .select()
         .eq('id', session.user.id)
         .single();
       
-      if (error && error.code !== 'PGRST116') {
-        console.error("Admin check error:", error);
+      if (error) {
+        if (error.code !== 'PGRST116') {
+          console.error("Admin check error:", error);
+        }
         return;
       }
 
-      if (adminProfiles) {
+      if (adminProfile) {
         setIsAdmin(true);
         toast({
           title: "Admin Access Granted",
