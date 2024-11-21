@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import MovieCard from "@/components/MovieCard";
@@ -52,8 +52,30 @@ const movies: Movie[] = [
 
 export default function Movies() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    checkAdminStatus();
+  }, []);
+
+  const checkAdminStatus = async () => {
+    const { data: adminProfile } = await supabase
+      .from('admin_profiles')
+      .select('*')
+      .eq('id', (await supabase.auth.getUser()).data.user?.id)
+      .single();
+    
+    setIsAdmin(!!adminProfile);
+  };
+
+  const handleContractsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isAdmin) {
+      navigate('/admin');
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -103,7 +125,7 @@ export default function Movies() {
             <div className="space-x-6">
               <a href="#new" className="hover:text-yellow-400">Phim mới</a>
               <a href="#categories" className="hover:text-yellow-400">Thể loại</a>
-              <a href="#deals" className="hover:text-yellow-400">Hợp đồng</a>
+              <a href="#" onClick={handleContractsClick} className="hover:text-yellow-400">Hợp đồng</a>
               <a href="#promos" className="hover:text-yellow-400">Ưu đãi</a>
               <a href="#support" className="hover:text-yellow-400">Hỗ trợ</a>
             </div>
