@@ -71,17 +71,15 @@ export default function Movies() {
       const { data: adminProfile, error } = await supabase
         .from('admin_profiles')
         .select()
-        .eq('id', session.user.id)
-        .single();
+        .eq('id', session.user.id);
       
       if (error) {
-        if (error.code !== 'PGRST116') {
-          console.error("Admin check error:", error);
-        }
+        console.error("Admin check error:", error);
         return;
       }
 
-      if (adminProfile) {
+      // Check if adminProfile exists and has at least one row
+      if (adminProfile && adminProfile.length > 0) {
         setIsAdmin(true);
         toast({
           title: "Admin Access Granted",
