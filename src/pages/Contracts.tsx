@@ -30,14 +30,16 @@ export default function Contracts() {
       if (error) throw error;
       return data as Contract[];
     },
-    onSuccess: (data) => {
-      if (data.length === 0) {
-        toast({
-          title: "No Contracts",
-          description: "There are no contracts submitted yet.",
-        });
+    meta: {
+      onSuccess: (data: Contract[]) => {
+        if (data.length === 0) {
+          toast({
+            title: "No Contracts",
+            description: "There are no contracts submitted yet.",
+          });
+        }
       }
-    },
+    }
   });
 
   if (isLoading) return <div className="p-8">Loading...</div>;
