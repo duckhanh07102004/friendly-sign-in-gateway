@@ -81,7 +81,16 @@ export default function Movies() {
       }
 
       // Check if any admin profile exists for this user
-      setIsAdmin(adminProfiles && adminProfiles.length > 0);
+      const isAdminUser = adminProfiles && adminProfiles.length > 0;
+      setIsAdmin(isAdminUser);
+      
+      // Show welcome message if user is admin
+      if (isAdminUser) {
+        toast({
+          title: "Welcome Admin",
+          description: "You have administrator privileges",
+        });
+      }
       
     } catch (error) {
       console.error("Auth check error:", error);
